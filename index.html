@@ -1,0 +1,681 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #D85A30;
+  --accent-light: #FAECE7;
+  --accent-mid: #F0997B;
+  --teal: #1D9E75;
+  --teal-light: #E1F5EE;
+  --amber: #BA7517;
+  --amber-light: #FAEEDA;
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+}
+
+#app {
+  font-family: 'Noto Sans Thai', sans-serif;
+  min-height: 520px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen { display: none; animation: fadeIn 0.4s ease; }
+.screen.active { display: block; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+
+.hero-bg {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 40px 32px 32px;
+  text-align: center;
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.hero-emoji {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 16px;
+  animation: pulse 3s infinite;
+}
+
+.hero-title {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.hero-sub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: var(--accent-light);
+  color: #993C1D;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 14px 36px;
+  font-size: 15px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+  letter-spacing: 0.2px;
+}
+
+.btn-primary:hover { background: #993C1D; transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.98); }
+
+.animals-preview {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  font-size: 24px;
+}
+
+.quiz-header {
+  padding: 20px 24px 0;
+}
+
+.progress-bar-wrap {
+  background: var(--color-border-tertiary);
+  border-radius: 20px;
+  height: 5px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 20px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.question-card {
+  margin: 16px 24px;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+}
+
+.q-number {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.q-scenario {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-background-secondary);
+  border-left: 3px solid var(--accent-mid);
+  padding: 10px 14px;
+  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+  margin-bottom: 16px;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.q-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.choices { display: flex; flex-direction: column; gap: 10px; }
+
+.choice-btn {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  padding: 13px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: all 0.2s;
+  line-height: 1.5;
+  position: relative;
+}
+
+.choice-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  transform: translateX(3px);
+}
+
+.choice-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: #993C1D;
+  font-weight: 500;
+}
+
+.choice-letter {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.loading-screen {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.loading-animal {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 24px;
+  animation: spin 0.6s steps(1) infinite;
+}
+
+@keyframes spin {
+  0% { content: "🦁"; }
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 6px;
+  margin: 16px 0;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%,60%,100% { transform:translateY(0); }
+  30% { transform:translateY(-10px); }
+}
+
+.loading-text {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+
+.result-screen { padding: 24px; }
+
+.result-animal-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  border: 0.5px solid var(--color-border-tertiary);
+  margin-bottom: 20px;
+  animation: slideUp 0.6s ease;
+}
+
+.result-emoji { font-size: 72px; display: block; margin-bottom: 12px; }
+
+.result-title {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.result-th { font-size: 18px; color: var(--color-text-secondary); margin-bottom: 16px; }
+
+.result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.result-tag {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.result-desc {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  margin-bottom: 16px;
+  animation: slideUp 0.8s ease;
+}
+
+.result-desc h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.result-desc p {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.8;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: slideUp 1s ease;
+}
+
+.stat-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 14px;
+  text-align: center;
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.stat-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 600; color: var(--color-text-primary); }
+
+.result-actions { display: flex; gap: 10px; }
+
+.btn-secondary {
+  flex: 1;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 12px;
+  font-family: 'Noto Sans Thai', sans-serif;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover { background: var(--color-background-primary); }
+.btn-primary.full { width: 100%; display: block; text-align: center; border-radius: var(--border-radius-md); }
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--purple-light);
+  color: #3C3489;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+</style>
+
+<div id="app">
+  <div id="screen-intro" class="screen active">
+    <div class="hero-bg">
+      <span class="hero-emoji">🐾</span>
+      <div class="hero-title">คุณคือสัตว์อะไร?<br><span style="font-size:16px;font-weight:400;color:var(--color-text-secondary)">What Animal Are You?</span></div>
+      <div style="margin:10px 0 16px;">
+        <span class="hero-tag">10 คำถาม · วิเคราะห์นิสัยจริง</span>
+      </div>
+      <div class="hero-sub">ตอบสถานการณ์จริงในชีวิต<br>แล้วค้นหาสัตว์ที่ซ่อนอยู่ในตัวคุณ<br><em style="font-size:11px;color:var(--color-text-secondary)">Answer real-life scenarios to discover your spirit animal</em></div>
+      <button class="btn-primary" onclick="startQuiz()">เริ่มทายเลย →</button>
+      <div class="animals-preview">
+        <span title="ราชสีห์">🦁</span>
+        <span title="จิ้งจอก">🦊</span>
+        <span title="ช้าง">🐘</span>
+        <span title="นกฮูก">🦉</span>
+        <span title="โลมา">🐬</span>
+        <span title="หมาป่า">🐺</span>
+        <span title="ผีเสื้อ">🦋</span>
+        <span title="หมี">🐻</span>
+        <span title="อินทรี">🦅</span>
+        <span title="เต่า">🐢</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:10%"></div></div>
+      <div class="progress-label"><span id="q-current">1</span>/10</div>
+    </div>
+    <div class="question-card" id="question-card"></div>
+  </div>
+
+  <div id="screen-loading" class="screen">
+    <div class="loading-screen">
+      <span class="loading-animal" id="loading-emoji">🔮</span>
+      <div style="font-family:'Noto Serif Thai',serif;font-size:20px;font-weight:700;color:var(--color-text-primary);margin-bottom:8px;">กำลังวิเคราะห์นิสัยคุณ...</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Analyzing your personality...</div>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <div class="loading-text" id="loading-msg">กำลังค้นหาสัตว์ที่ตรงกับคุณที่สุด</div>
+    </div>
+  </div>
+
+  <div id="screen-result" class="screen">
+    <div class="result-screen" id="result-content"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    scenario: "คุณเดินผ่านมาแล้วได้ยินชัดๆ ว่าเพื่อนร่วมงานกำลังนินทาคุณอยู่กับคนอื่น พอเขารู้ว่าคุณได้ยิน เขาก็หันหน้าหนีทันที",
+    scenarioEn: "You overhear a coworker gossiping about you. They realize you heard, then walk away.",
+    text: "คุณจะทำอะไร?",
+    choices: [
+      { text: "เดินเข้าไปหาและพูดตรงๆ ว่า 'ฉันได้ยินที่พูดนะ อยากคุยกันไหม?'", traits: { lion: 3, eagle: 2, wolf: 1 } },
+      { text: "เก็บไว้ในใจ แต่ระวังตัวมากขึ้น ไม่ไว้ใจเขาอีกต่อไป", traits: { owl: 2, fox: 3, bear: 1 } },
+      { text: "แกล้งทำเป็นไม่ได้ยิน แล้วปล่อยผ่านไป ไม่คุ้มทะเลาะ", traits: { turtle: 3, dolphin: 2, butterfly: 1 } },
+      { text: "ถามเพื่อนสนิทว่าเคยได้ยินใครพูดแบบนี้ไหม เพื่อเข้าใจสถานการณ์", traits: { elephant: 3, dolphin: 2, owl: 1 } }
+    ]
+  },
+  {
+    scenario: "งานกลุ่มสำคัญ มีหนึ่งคนที่แทบไม่ทำงาน แต่ตอนนำเสนอกลับออกหน้าพูดราวกับว่าตัวเองทำทุกอย่าง",
+    scenarioEn: "In a group project, one person barely contributed but takes all the credit in the presentation.",
+    text: "คุณรู้สึกและทำอะไร?",
+    choices: [
+      { text: "พูดต่อหน้าทุกคนเลยว่า 'จริงๆ แล้วใครทำอะไรบ้างนะ?'", traits: { lion: 3, eagle: 2 } },
+      { text: "บอกอาจารย์/หัวหน้าแบบส่วนตัวว่าสถานการณ์จริงเป็นอย่างไร", traits: { owl: 2, fox: 3, wolf: 1 } },
+      { text: "อดทนไว้ก่อน แต่จำไว้ว่าครั้งหน้าจะไม่ให้โอกาสแบบนี้อีก", traits: { bear: 3, turtle: 2, elephant: 2 } },
+      { text: "ปล่อยไป บุญกรรมเป็นของใครของมัน ไม่ใช่ธุระเรา", traits: { butterfly: 3, dolphin: 2, turtle: 1 } }
+    ]
+  },
+  {
+    scenario: "คุณทำผิดพลาดในงานและมันส่งผลให้ทีมทั้งหมดเดือดร้อน ทุกคนรู้ว่าคุณเป็นคนผิด",
+    scenarioEn: "You made a mistake that caused problems for the whole team. Everyone knows it was you.",
+    text: "reaction แรกของคุณคืออะไร?",
+    choices: [
+      { text: "ยอมรับทันที ขอโทษ แล้วเสนอวิธีแก้ปัญหาโดยเร็ว", traits: { lion: 3, elephant: 3, eagle: 1 } },
+      { text: "รู้สึกเขินมาก อยากหายตัวไปสักพัก แต่สุดท้ายก็ยอมรับ", traits: { turtle: 3, butterfly: 2, dolphin: 1 } },
+      { text: "วิเคราะห์ก่อนว่าเกิดอะไรขึ้นกันแน่ แล้วค่อยออกมาพูด", traits: { owl: 3, fox: 2 } },
+      { text: "รู้สึกแย่มาก แต่พยายามชดเชยด้วยการทำงานหนักขึ้นแทนการพูด", traits: { wolf: 3, bear: 2 } }
+    ]
+  },
+  {
+    scenario: "เพื่อนสนิทโทรมาร้องไห้บอกว่าเลิกกับแฟน คุณเหนื่อยมากจากงานหนักทั้งสัปดาห์ และพรุ่งนี้มีประชุมสำคัญ",
+    scenarioEn: "Your close friend calls crying about a breakup. You're exhausted from a full week of work with an important meeting tomorrow.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "รับโทรศัพท์คุยทันที ถึงเหนื่อยแค่ไหนก็ตาม", traits: { dolphin: 3, elephant: 3, wolf: 1 } },
+      { text: "รับสาย ฟังสักครู่ แล้วนัดคุยยาวๆ พรุ่งนี้แทน", traits: { fox: 2, owl: 2, bear: 2, butterfly: 1 } },
+      { text: "ส่งข้อความบอกว่าอยู่ด้วยใจ แต่ตอนนี้พักไม่ได้จริงๆ", traits: { turtle: 3, eagle: 1 } },
+      { text: "ปล่อยสายทิ้ง แต่ส่งสติ๊กเกอร์หัวใจให้แทน รู้ว่าผิด แต่ทำไม่ได้จริงๆ", traits: { butterfly: 2, fox: 1 } }
+    ]
+  },
+  {
+    scenario: "คุณอยู่ในสถานการณ์ที่ต้องตัดสินใจเร็ว ข้อมูลที่มีอยู่ยังไม่ครบ 100% และการตัดสินใจผิดอาจกระทบคนอื่น",
+    scenarioEn: "You need to make a quick decision with incomplete information. A wrong choice could affect others.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "ตัดสินใจจากสัญชาตญาณ แล้วค่อยรับผิดชอบถ้าผิด", traits: { lion: 3, eagle: 2, wolf: 2 } },
+      { text: "หาข้อมูลเพิ่มแม้จะใช้เวลา ตัดสินใจผิดไม่ได้", traits: { owl: 3, fox: 2, turtle: 1 } },
+      { text: "ถามคนรอบข้างก่อน รวบรวมความเห็น แล้วค่อยตัดสิน", traits: { dolphin: 3, elephant: 2 } },
+      { text: "ทำตามกฎหรือ precedent ที่มี ปลอดภัยที่สุด", traits: { bear: 3, turtle: 2 } }
+    ]
+  },
+  {
+    scenario: "คุณรู้ว่าเพื่อนคนหนึ่งทำสิ่งผิดๆ อยู่ เขาไม่ได้ทำร้ายใครโดยตรง แต่มันผิดจริยธรรม",
+    scenarioEn: "You know a friend is doing something ethically wrong, though not directly harming anyone.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "พูดตรงๆ กับเขาว่าสิ่งที่ทำอยู่มันไม่โอเค", traits: { lion: 3, elephant: 2, eagle: 2 } },
+      { text: "รอจังหวะที่ดี แล้วค่อยๆ พูดอ้อมๆ ให้เขาคิดเอง", traits: { fox: 3, owl: 2, dolphin: 1 } },
+      { text: "ไม่ใช่ธุระเรา ตราบใดที่ไม่กระทบใคร", traits: { turtle: 3, bear: 2 } },
+      { text: "รู้สึกไม่สบายใจ แต่ไม่รู้จะพูดยังไง เลยเงียบไว้ก่อน", traits: { butterfly: 3, wolf: 1 } }
+    ]
+  },
+  {
+    scenario: "มีคนที่คุณไม่ชอบขอความช่วยเหลือจากคุณ และคุณสามารถช่วยได้จริงๆ",
+    scenarioEn: "Someone you dislike asks for your help with something you're fully capable of doing.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "ช่วยเต็มที่ ไม่เกี่ยวว่าชอบเขาหรือเปล่า งานคืองาน", traits: { eagle: 3, elephant: 2, lion: 1 } },
+      { text: "ช่วย แต่ให้แค่ที่จำเป็น ไม่เกินกว่านั้น", traits: { fox: 3, wolf: 2, owl: 1 } },
+      { text: "ช่วยด้วยใจจริง คนนี้อาจจะดีกว่าที่คิดก็ได้", traits: { dolphin: 3, butterfly: 2, elephant: 1 } },
+      { text: "หาข้ออ้างปฏิเสธ ไม่อยากเกี่ยวข้องด้วย", traits: { bear: 2, turtle: 3 } }
+    ]
+  },
+  {
+    scenario: "คุณอยู่ในกลุ่มสนทนา มีคนพูดเรื่องที่ผิดข้อเท็จจริงชัดเจน และคนอื่นในกลุ่มก็เชื่อตาม",
+    scenarioEn: "In a group chat, someone states something clearly factually wrong and others are agreeing.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "โพสต์แก้ทันที พร้อมแหล่งอ้างอิง", traits: { owl: 3, eagle: 2, lion: 1 } },
+      { text: "ส่งข้อความส่วนตัวให้คนที่พูดผิดอธิบายเบาๆ", traits: { dolphin: 3, fox: 2, elephant: 1 } },
+      { text: "แค่กด dislike หรือปล่อยผ่าน ไม่อยากเป็นคนขัดแย้ง", traits: { turtle: 3, butterfly: 2 } },
+      { text: "รวบรวมข้อมูลก่อน แล้วค่อยโพสต์แก้อย่างมีหลักฐาน", traits: { owl: 2, bear: 3, wolf: 1 } }
+    ]
+  },
+  {
+    scenario: "คุณทำงานหนักมากเพื่อโปรเจกต์หนึ่ง แต่ผลลัพธ์ออกมาไม่ดีอย่างที่หวัง แม้จะทำเต็มที่แล้ว",
+    scenarioEn: "You worked very hard on a project but the results weren't as good as hoped, despite giving your all.",
+    text: "คุณรับมือยังไง?",
+    choices: [
+      { text: "วิเคราะห์ว่าผิดพลาดตรงไหน แล้วทำใหม่ดีกว่าเดิม", traits: { eagle: 3, owl: 2, lion: 1 } },
+      { text: "รู้สึกแย่สักพัก แต่แล้วก็ลุกขึ้นมาใหม่ได้เอง", traits: { wolf: 3, bear: 2, lion: 1 } },
+      { text: "ปลอบตัวเองว่าผลไม่ใช่ทุกอย่าง กระบวนการก็สำคัญ", traits: { turtle: 3, dolphin: 2, butterfly: 2 } },
+      { text: "ขอ feedback จากคนที่ไว้ใจ เพื่อมองภาพได้ชัดขึ้น", traits: { elephant: 3, fox: 2 } }
+    ]
+  },
+  {
+    scenario: "มีโอกาสงานใหม่ที่น่าตื่นเต้นมาก แต่มันเสี่ยง ไม่รู้จะสำเร็จหรือเปล่า และต้องทิ้งความมั่นคงที่มีอยู่",
+    scenarioEn: "An exciting but risky opportunity appears — it might not work out and you'd leave your current stability.",
+    text: "คุณทำอะไร?",
+    choices: [
+      { text: "คว้าไว้เลย ชีวิตสั้น เสี่ยงเพื่อสิ่งที่ต้องการ", traits: { lion: 3, eagle: 3, butterfly: 1 } },
+      { text: "ศึกษาข้อมูลอย่างละเอียดก่อนตัดสินใจ", traits: { owl: 3, fox: 2 } },
+      { text: "ปรึกษาคนใกล้ชิดก่อน ไม่ตัดสินใจคนเดียว", traits: { elephant: 3, dolphin: 2, wolf: 1 } },
+      { text: "รอดูก่อน ถ้ายังมีโอกาสอยู่อีกสักพักค่อยตัดสิน", traits: { turtle: 3, bear: 2 } }
+    ]
+  }
+];
+
+const animals = {
+  lion: { emoji: "🦁", name: "Lion", nameTh: "ราชสีห์", tags: [["กล้าหาญ","coral"],["ตรงไปตรงมา","amber"],["Leadership","teal"]], desc: "คุณมีจิตใจกล้าหาญและตรงไปตรงมา เผชิญปัญหาหน้าตรง ไม่หนีความขัดแย้ง คนรอบข้างรู้สึกมั่นใจเวลาอยู่ด้วย เพราะคุณมักเป็นคนตัดสินใจและรับผิดชอบ", descEn: "You're courageous and direct. You face conflicts head-on and take responsibility — people feel secure around you.", power: "ความกล้าและความรับผิดชอบ", challenge: "บางครั้งตรงเกินไปจนคนรับไม่ได้" },
+  fox: { emoji: "🦊", name: "Fox", nameTh: "จิ้งจอก", tags: [["ฉลาดแกมโกง","amber"],["สังเกตเก่ง","teal"],["Strategic","coral"]], desc: "คุณอ่านสถานการณ์เก่งและรู้จักเลือกสนาม ไม่โผงผาง แต่ได้ผลลัพธ์ที่ต้องการเสมอ ความฉลาดเฉลียวคือเกราะป้องกันที่ดีที่สุดของคุณ", descEn: "You read situations well and choose your battles wisely. Smart and strategic, you always find a way.", power: "ความฉลาดเฉลียว", challenge: "อาจดูไม่จริงใจในสายตาคนอื่น" },
+  elephant: { emoji: "🐘", name: "Elephant", nameTh: "ช้าง", tags: [["ความจำดี","teal"],["ห่วงใยผู้อื่น","coral"],["Wisdom","amber"]], desc: "คุณใส่ใจคนรอบข้างอย่างลึกซึ้ง ไม่ลืมความดีที่ใครเคยทำ และพร้อมอยู่เคียงข้างเมื่อเขาต้องการ ความทรงจำที่ดีทำให้คุณเป็นเพื่อนที่ไว้ใจได้ที่สุด", descEn: "You care deeply and never forget kindness. You're the one people turn to when they need genuine support.", power: "ความภักดีและความห่วงใย", challenge: "อาจเก็บความเจ็บปวดไว้นานเกินไป" },
+  owl: { emoji: "🦉", name: "Owl", nameTh: "นกฮูก", tags: [["วิเคราะห์เก่ง","teal"],["รอบคอบ","amber"],["Analytical","coral"]], desc: "คุณคิดก่อนพูด สังเกตก่อนลงมือ ความรอบคอบของคุณทำให้ตัดสินใจพลาดน้อย แม้บางครั้งจะช้ากว่าคนอื่น แต่ผลลัพธ์มักแม่นยำกว่า", descEn: "You think before you speak and observe before acting. Your careful approach means fewer mistakes, though you may move slower.", power: "ความคิดวิเคราะห์", challenge: "อาจคิดมากจนลงมือช้า" },
+  dolphin: { emoji: "🐬", name: "Dolphin", nameTh: "โลมา", tags: [["เห็นอกเห็นใจ","teal"],["สื่อสารเก่ง","coral"],["Empathy","amber"]], desc: "คุณอ่านอารมณ์คนได้เก่งและรู้วิธีเชื่อมต่อกับทุกคน ความเห็นอกเห็นใจของคุณทำให้คนรู้สึกถูกเข้าใจ คุณมักเป็นสะพานที่เชื่อมคนที่ขัดแย้งกัน", descEn: "You read emotions well and connect with everyone. Your empathy makes people feel understood — you bridge conflicts.", power: "ความเห็นอกเห็นใจ", challenge: "อาจเหนื่อยง่ายจากการรับอารมณ์คนอื่น" },
+  wolf: { emoji: "🐺", name: "Wolf", nameTh: "หมาป่า", tags: [["ภักดี","coral"],["อดทน","amber"],["Loyal","teal"]], desc: "คุณภักดีต่อคนที่คุณรักอย่างไม่มีเงื่อนไข ทำงานหนักในเงามืดโดยไม่ต้องการการยอมรับ แต่เมื่อถึงเวลา คุณพร้อมออกหน้าเพื่อคนของคุณ", descEn: "You're fiercely loyal to those you love. You work hard in the background without needing recognition, but when it matters, you show up.", power: "ความภักดีและความอดทน", challenge: "อาจปิดตัวเองจากคนแปลกหน้า" },
+  butterfly: { emoji: "🦋", name: "Butterfly", nameTh: "ผีเสื้อ", tags: [["ยืดหยุ่น","teal"],["ปรับตัวเก่ง","coral"],["Adaptable","amber"]], desc: "คุณปรับตัวได้กับทุกสถานการณ์และรู้จักปล่อยวาง สิ่งที่คนอื่นมองว่าเป็นความโกลาหล คุณมองว่าเป็นโอกาสในการเปลี่ยนแปลง", descEn: "You adapt to any situation and know when to let go. What others see as chaos, you see as opportunity for change.", power: "ความยืดหยุ่นและการปล่อยวาง", challenge: "อาจดูไม่จริงจังในสายตาคนอื่น" },
+  bear: { emoji: "🐻", name: "Bear", nameTh: "หมี", tags: [["มั่นคง","amber"],["ปกป้องคนที่รัก","coral"],["Steady","teal"]], desc: "คุณเป็นคนที่คนรอบข้างรู้สึกปลอดภัยเมื่ออยู่ด้วย มั่นคง ไว้ใจได้ และพร้อมปกป้องคนที่คุณรัก ไม่แสดงอารมณ์มาก แต่ความรู้สึกลึกมาก", descEn: "People feel safe around you. You're stable, trustworthy, and protective. You don't show much emotion, but feel everything deeply.", power: "ความมั่นคงและการปกป้อง", challenge: "อาจต้านทานการเปลี่ยนแปลง" },
+  eagle: { emoji: "🦅", name: "Eagle", nameTh: "อินทรี", tags: [["มองการณ์ไกล","teal"],["เป้าหมายชัด","amber"],["Visionary","coral"]], desc: "คุณมองเห็นภาพใหญ่ที่คนอื่นมองไม่เห็น และไม่ยอมให้อะไรมาขวางเป้าหมาย ความมุ่งมั่นของคุณเป็นแรงบันดาลใจให้คนอื่น แม้บางครั้งจะดูห่างเหิน", descEn: "You see the big picture others miss and let nothing block your goals. Your determination inspires others, even if you seem distant.", power: "วิสัยทัศน์และความมุ่งมั่น", challenge: "อาจลืมโฟกัสที่คนใกล้ชิด" },
+  turtle: { emoji: "🐢", name: "Turtle", nameTh: "เต่า", tags: [["ใจเย็น","teal"],["รอบคอบ","amber"],["Patient","coral"]], desc: "คุณรู้จักเวลาที่ควรพูดและควรเงียบ ไม่รีบร้อน แต่เมื่อตัดสินใจแล้วมั่นคงมาก เปลือกนอกดูแข็ง แต่ข้างในอ่อนโยนและลึกซึ้ง", descEn: "You know when to speak and when to stay quiet. Unhurried, but once decided, you're unshakeable. Hard shell, soft heart.", power: "ความอดทนและความมั่นคง", challenge: "อาจปิดตัวเองไม่ยอมรับสิ่งใหม่" }
+};
+
+let currentQ = 0;
+let scores = { lion:0, fox:0, elephant:0, owl:0, dolphin:0, wolf:0, butterfly:0, bear:0, eagle:0, turtle:0 };
+let answers = [];
+let loadingAnimals = ["🦁","🦊","🐘","🦉","🐬","🐺","🦋","🐻","🦅","🐢","🔮"];
+let loadingMessages = ["กำลังวิเคราะห์ความกล้าของคุณ...","ตรวจสอบสัญชาตญาณ...","ชั่งน้ำหนักการตัดสินใจ...","ค้นหาสัตว์ที่ซ่อนอยู่...","เกือบเสร็จแล้ว..."];
+let loadingIdx = 0;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  scores = { lion:0, fox:0, elephant:0, owl:0, dolphin:0, wolf:0, butterfly:0, bear:0, eagle:0, turtle:0 };
+  answers = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const pct = ((currentQ + 1) / 10) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-current').textContent = currentQ + 1;
+
+  const letters = ['A','B','C','D'];
+  const choicesHtml = q.choices.map((c, i) =>
+    `<button class="choice-btn" onclick="selectChoice(${i})">
+      <span class="choice-letter">${letters[i]}</span>${c.text}
+    </button>`
+  ).join('');
+
+  document.getElementById('question-card').innerHTML = `
+    <div class="q-number">คำถามที่ ${currentQ + 1} · Question ${currentQ + 1}</div>
+    <div class="q-scenario">${q.scenario}<br><em style="font-size:11px;opacity:0.7">${q.scenarioEn}</em></div>
+    <div class="q-text">${q.text}</div>
+    <div class="choices">${choicesHtml}</div>
+  `;
+}
+
+function selectChoice(idx) {
+  const q = questions[currentQ];
+  const choice = q.choices[idx];
+
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === idx);
+    b.onclick = null;
+  });
+
+  Object.entries(choice.traits).forEach(([animal, val]) => {
+    scores[animal] = (scores[animal] || 0) + val;
+  });
+  answers.push(idx);
+
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < 10) { renderQuestion(); }
+    else { showLoading(); }
+  }, 500);
+}
+
+function showLoading() {
+  showScreen('loading');
+  loadingIdx = 0;
+  const emojis = loadingAnimals;
+  const msgs = loadingMessages;
+  let i = 0;
+
+  const interval = setInterval(() => {
+    document.getElementById('loading-emoji').textContent = emojis[i % emojis.length];
+    document.getElementById('loading-msg').textContent = msgs[Math.min(i, msgs.length-1)];
+    i++;
+  }, 400);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    showResult();
+  }, 3200);
+}
+
+function showResult() {
+  const top = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+  const animal = animals[top];
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  const pct = Math.round((scores[top]/total)*100);
+
+  const tagColors = { coral: '#993C1D', teal: '#0F6E56', amber: '#854F0B' };
+  const tagBgs = { coral: '#FAECE7', teal: '#E1F5EE', amber: '#FAEEDA' };
+
+  const tagsHtml = animal.tags.map(([label, color]) =>
+    `<span class="result-tag" style="background:${tagBgs[color]};color:${tagColors[color]}">${label}</span>`
+  ).join('');
+
+  document.getElementById('result-content').innerHTML = `
+    <div class="result-animal-card">
+      <div class="ai-badge"><i class="ti ti-sparkles" aria-hidden="true"></i> วิเคราะห์จากพฤติกรรมจริง</div>
+      <span class="result-emoji">${animal.emoji}</span>
+      <div class="result-title">${animal.nameTh}</div>
+      <div class="result-th">${animal.name}</div>
+      <div class="result-tags">${tagsHtml}</div>
+    </div>
+    <div class="result-desc">
+      <h3>🇹🇭 นิสัยของคุณ</h3>
+      <p>${animal.desc}</p>
+      <p style="margin-top:10px;font-size:13px;color:var(--color-text-secondary);font-style:italic">${animal.descEn}</p>
+    </div>
+    <div class="result-stats">
+      <div class="stat-card">
+        <div class="stat-label">ความแม่นยำ</div>
+        <div class="stat-value" style="color:#D85A30">${pct}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">จุดแข็ง</div>
+        <div class="stat-value" style="font-size:13px;font-weight:500;padding-top:4px">${animal.power}</div>
+      </div>
+      <div class="stat-card" style="grid-column:1/-1">
+        <div class="stat-label">จุดที่ต้องระวัง · Challenge</div>
+        <div class="stat-value" style="font-size:13px;font-weight:500;padding-top:4px">${animal.challenge}</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-secondary" onclick="startQuiz()">ทำใหม่อีกครั้ง</button>
+      <button class="btn-secondary" onclick="shareResult('${animal.emoji} ${animal.nameTh} (${animal.name})')">แชร์ผลลัพธ์</button>
+    </div>
+  `;
+
+  showScreen('result');
+}
+
+function shareResult(animal) {
+  const text = `ฉันทำแบบทดสอบ "คุณคือสัตว์อะไร?" แล้วได้ผลลัพธ์ว่าคือ ${animal}! ลองทำดูสิ 🐾`;
+  if (navigator.share) {
+    navigator.share({ title: 'คุณคือสัตว์อะไร?', text: text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('คัดลอกข้อความแล้ว! นำไปแชร์ได้เลย 🐾'));
+  }
+}
+</script>
